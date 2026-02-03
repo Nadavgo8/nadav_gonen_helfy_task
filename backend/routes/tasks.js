@@ -67,5 +67,13 @@ router.delete("/:id", (req, res) => {
 })
 router.patch("/:id/toggle", (req, res) => {
     console.log("toggle");
+    const id = parseId(req, res);
+    if (id === null) return;
+    
+    const t = findTask(id);
+    if (!t) return res.status(404).json({ message: "Task not found" });
+
+    t.completed = !t.completed;
+    res.json(t);
 })
 export default router;
