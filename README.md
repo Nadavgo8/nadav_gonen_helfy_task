@@ -1,4 +1,4 @@
-# nadav_gonen_helfy_task# Task Manager App
+Task Manager App
 ## Backend Setup
 1. cd backend
 2. npm install
