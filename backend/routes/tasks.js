@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { validateCreateTask, validateUpdateTask } from "../middleware/validateTask.js";
+
 const router = Router();
 
 let tasks = [];//tasks array
@@ -11,7 +13,7 @@ function findTask(id) {
 
 function parseId(req, res) {
   const id = Number(req.params.id);
-  if (!Number.isFinite(id)) {
+  if (!Number.isInteger(id) || id <=0) {
     res.status(400).json({ message: "Invalid id" });
     return null;
   }
@@ -20,11 +22,9 @@ function parseId(req, res) {
 
 
 router.get("/", (req, res) => {
-    console.log("get tasks");
     res.json(tasks);
 })
-router.post("/", (req, res) => {
-    console.log("post tasks");
+router.post("/",validateCreateTask, (req, res) => {
     const { title, description, priority } = req.body;
     const task = {
         id: ++numOfTasks,
@@ -38,8 +38,7 @@ router.post("/", (req, res) => {
   tasks.push(task);
   res.status(201).json(task);
 })
-router.put("/:id", (req, res) => {
-    console.log("update task");
+router.put("/:id",validateUpdateTask, (req, res) => {
     const id = parseId(req, res);
     if (id === null) return;
 
@@ -55,7 +54,6 @@ router.put("/:id", (req, res) => {
     res.json(task);
 })
 router.delete("/:id", (req, res) => {
-    console.log("delete task with id");
     const id = parseId(req, res);
     if (id === null) return;
 
@@ -66,10 +64,9 @@ router.delete("/:id", (req, res) => {
     res.status(204).send();
 })
 router.patch("/:id/toggle", (req, res) => {
-    console.log("toggle");
     const id = parseId(req, res);
     if (id === null) return;
-    
+
     const t = findTask(id);
     if (!t) return res.status(404).json({ message: "Task not found" });
 
