@@ -47,7 +47,6 @@ router.put("/:id", (req, res) => {
     if (!task) return res.status(404).json({ message: "Task not found" });
 
     const { title, description, priority, completed } = req.body;
-
     if (title !== undefined) task.title = title;
     if (description !== undefined) task.description = description;
     if (priority !== undefined) task.priority = priority;
@@ -57,6 +56,14 @@ router.put("/:id", (req, res) => {
 })
 router.delete("/:id", (req, res) => {
     console.log("delete task with id");
+    const id = parseId(req, res);
+    if (id === null) return;
+
+    const idx = tasks.findIndex((t) => t.id === id);
+    if (idx === -1) return res.status(404).json({ message: "Task not found" });
+
+    tasks.splice(idx, 1);
+    res.status(204).send();
 })
 router.patch("/:id/toggle", (req, res) => {
     console.log("toggle");
