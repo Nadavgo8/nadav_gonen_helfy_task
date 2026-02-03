@@ -33,6 +33,31 @@ export default function App() {
     }
   }
 
+  async function handleToggle(task) {
+    setError("");
+    try {
+      const updated = await tasksApi.toggle(task.id);
+      setTasks((prev) =>
+        prev.map((t) => (t.id === task.id ? updated : t))
+      );
+    } catch (err) {
+      setError(err.message || "Failed to toggle task");
+    }
+  }
+
+  async function handleDelete(task) {
+    const ok = window.confirm(`Delete "${task.title}"?`);
+    if (!ok) return;
+
+    setError("");
+    try {
+      await tasksApi.remove(task.id);
+      setTasks((prev) => prev.filter((t) => t.id !== task.id));
+    } catch (err) {
+      setError(err.message || "Failed to delete task");
+    }
+  }
+
   return (
     <div style={{ padding: 20 }}>
       <h1>Task Manager</h1>
@@ -40,7 +65,13 @@ export default function App() {
       {loading && <p>Loading tasks...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {!loading && !error && <TaskList tasks={tasks} />}
+      {!loading && !error && (
+        <TaskList
+          tasks={tasks}
+          onToggle={handleToggle}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }
