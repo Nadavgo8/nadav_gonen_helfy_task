@@ -1,8 +1,24 @@
 import { Router } from "express";
-
-let tasks = [];
-let numOfTasks = 0;
 const router = Router();
+
+let tasks = [];//tasks array
+let numOfTasks = 0;//used for id count
+
+//helper functions
+function findTask(id) {
+  return tasks.find((t) => t.id === id);
+}
+
+function parseId(req, res) {
+  const id = Number(req.params.id);
+  if (!Number.isFinite(id)) {
+    res.status(400).json({ message: "Invalid id" });
+    return null;
+  }
+  return id;
+}
+
+
 router.get("/", (req, res) => {
     console.log("get tasks");
     res.json(tasks);
@@ -22,8 +38,22 @@ router.post("/", (req, res) => {
   tasks.push(task);
   res.status(201).json(task);
 })
-router.get("/:id", (req, res) => {
-    console.log("get task with id");
+router.put("/:id", (req, res) => {
+    console.log("update task");
+    const id = parseId(req, res);
+    if (id === null) return;
+
+    const task = findTask(id);
+    if (!task) return res.status(404).json({ message: "Task not found" });
+
+    const { title, description, priority, completed } = req.body;
+
+    if (title !== undefined) task.title = title;
+    if (description !== undefined) task.description = description;
+    if (priority !== undefined) task.priority = priority;
+    if (completed !== undefined) task.completed = completed;
+
+    res.json(task);
 })
 router.delete("/:id", (req, res) => {
     console.log("delete task with id");
