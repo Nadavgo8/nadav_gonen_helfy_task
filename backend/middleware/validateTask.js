@@ -1,5 +1,3 @@
-// backend/middleware/validateTask.js
-
 const PRIORITIES = new Set(["low", "medium", "high"]);
 const MSG = {
   VALIDATION: "Validation error",
@@ -12,6 +10,7 @@ const MSG = {
 const ASSUMPTIONS = {
   titleMinLen: 2,
   descriptionMinLen: 2};
+  
 export function validateCreateTask(req, res, next) {
   const { title, description, priority } = req.body || {};
   const errors = [];
