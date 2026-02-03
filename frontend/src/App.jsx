@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { tasksApi } from "./services/tasksApi";
 import TaskList from "./components/TaskList";
+import TaskForm from "./components/TaskForm";
 
 export default function App() {
   const [tasks, setTasks] = useState([]);
@@ -22,10 +23,20 @@ export default function App() {
     loadTasks();
   }, []);
 
+  async function handleCreate(task) {
+    setError("");
+    try {
+      const created = await tasksApi.create(task);
+      setTasks((prev) => [created, ...prev]);
+    } catch (err) {
+      setError(err.message || "Failed to create task");
+    }
+  }
+
   return (
     <div style={{ padding: 20 }}>
       <h1>Task Manager</h1>
-
+      <TaskForm onCreate={handleCreate} disabled={loading} />
       {loading && <p>Loading tasks...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
