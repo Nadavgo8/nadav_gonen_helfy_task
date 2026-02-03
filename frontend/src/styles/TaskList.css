@@ -1,0 +1,26 @@
+.carousel {
+  overflow: hidden;
+  width: 100%;
+  border-radius: 12px;
+  padding: 12px ;
+}
+
+.track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: scroll 35s linear infinite;
+}
+
+.carousel:hover .track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

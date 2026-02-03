@@ -25,6 +25,7 @@ export default function TaskItem({ task, onToggle, onDelete, onEdit }) {
   return (
     <li
       style={{
+        width: 260, flex: "0 0 auto",
         border: "1px solid #ddd",
         borderRadius: 8,
         padding: 12,
